@@ -12,9 +12,10 @@ int main() {
     if (n >= 2) {
         cout << 6 << '\n';
     }
-    for (int k = 3; k <= n; ++k) {
+    for (ll k = 3; k <= n; ++k) {
         total = (k*k) * (k*k - 1) / 2;
-        attacks += 2 * min(1, k-3) + 4 * (k - 2) + 4 * (k - );
+        attacks += (8 * k - 16);
+        cout << (total - attacks) << '\n';
     }
     return 0;
 }
