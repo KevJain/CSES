@@ -5,6 +5,8 @@
 typedef long long ll;
 using namespace std;
 
+#pragma GCC target("popcnt")
+
 void print_(vector<char>& v) {
     for (auto c : v) {
         cout << c;
@@ -19,26 +21,17 @@ int main() {
     int n, k;
     cin >> n >> k;
     vector<vector<char>> grid(n,vector<char>(n));
+    int sz = n / 64 + 1;
+    vector<vector<vector<ll>>> filtered(k, vector<vector<ll>>(n, vector<ll>(sz,0)));
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-            cin >> grid[i][j];
+            char ch;
+            cin >> ch;
+            filtered[ch-'A'][i][j/64] |= 1LL << (j % 64);
         }
     }
-    int sz = n / 64 + 1;
-    for (char ch = 'A'; ch < 'A' + k; ch++) {
-        vector<vector<ll>> filtered(n, vector<ll>(sz,0));
-        
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == ch) {
-                    filtered[i][j/64] |= ((ll)1) << (j % 64);
-                }
-        }
-            //cout << bitset<64>(filtered[i][0]) <<endl;
-        }
-        for (int tt = 0; tt < n; tt++) {
-            //cout << filtered[tt][0] << endl;
-        }
+
+    for (int ch = 0; ch < k; ch++) {
         bool found = false;
         int count = 0;
         for (int r1 = 0; r1 < n-1; r1++) {
@@ -46,7 +39,7 @@ int main() {
             for (int r2 = r1 + 1; r2 < n; r2++) {
                 count = 0;
                 for (int i = 0; i < sz; i++) {
-                    count += __builtin_popcount(filtered[r1][i]&filtered[r2][i]);
+                    count += __builtin_popcount(filtered[ch][r1][i]&filtered[ch][r2][i]);
                 }
                 if (count > 1) {
                     found = true;
@@ -56,6 +49,6 @@ int main() {
         }
         cout << (found ? "YES" : "NO") << '\n';
     }
-    
+
     return 0;
 }
