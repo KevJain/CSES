@@ -3,20 +3,17 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <queue>
 typedef long long ll;
 using namespace std;
 
 ll inf = 1e18;
 
-void heapify(vector<int>& arr, vector<int>& dists) {
-
-}
-
 int main() {
     ios_base::sync_with_stdio(false); cin.tie(0);
     int n, m;
     cin >> n >> m;
-    vector<vector<pair<int,int>>> graph(n, vector<<pair<int,int>>());
+    vector<vector<pair<int,ll>>> graph(n+1, vector<pair<int,ll>>());
     for (int i = 0; i < m; i++) {
         int a, b, c;
         cin >> a >> b >> c;
@@ -25,11 +22,27 @@ int main() {
     }
     // Begin with vertex 1
     ll cost = 0;
-    vector<int> unseen(n-1);
-    vector<ll> dists(n+1, inf);
-    iota(unseen.begin(), unseen.end(), 2);
-    update_dists(1, dists, graph);
-    
-
+    priority_queue<pair<ll, int>, vector<pair<ll,int>>, greater<pair<ll,int>>> pq;
+    pq.push({0,1});
+    vector<bool> seen(n+1);
+    int tree_size = 0;
+    while (!pq.empty()) {
+        auto [road_cost, city] = pq.top();
+        pq.pop();
+        if (seen[city]) continue;
+        cost += road_cost;
+        tree_size++;
+        seen[city] = true;
+        for (auto [neighbour, dist] : graph[city]) {
+            if (!seen[neighbour]) {
+                pq.push({dist, neighbour});
+            }
+        }
+    }
+    if (tree_size < n) {
+        cout << "IMPOSSIBLE";
+    } else {
+        cout << cost;
+    }
     return 0;
 }
