@@ -1,6 +1,7 @@
 // Topological sort on reverse graph, then use bitmask dp
-#pragma GCC optimize("O3,unroll-loops")
-#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
+// Combine SCCs
+//#pragma GCC optimize("O3,unroll-loops")
+//#pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
 #include <iostream>
 #include <bitset>
 #include <vector>
@@ -22,8 +23,8 @@ void visit(int cur, vector<vector<int>>& graph, vector<int>& tsort, vector<bool>
 
 int main() {
     ios_base::sync_with_stdio(false); cin.tie(0);
-    int n, m;
-    cin >> n >> m;
+    int n, m, queries;
+    cin >> n >> m >> queries;
     vector<vector<int>> graph(n+1, vector<int>());
     vector<int> indeg(n+1);
     for (int i = 0; i < m; i++) {
@@ -46,8 +47,10 @@ int main() {
             if (--indeg[neighbour] == 0) q.push(neighbour);
         }
     }
-    for (int i = 1; i <= n; i++) {
-        cout << reachable[i].count() << ' ';
+    for (int i = 0; i < queries; i++) {
+        int a, b;
+        cin >> a >> b;
+        cout << (reachable[a][b] ? "YES" : "NO") << '\n';
     }
     return 0;
 }
