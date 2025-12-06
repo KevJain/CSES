@@ -10,25 +10,19 @@ int main() {
     cin >> n >> k;
     cin >> x >> a >> b >> c;
     int out = 0;
-    int prev[31] = {};
+    vector<int> prev(31, 0);
     for (int i = 1; i <= n; i ++) {
-        int p = 0;
-        while (1 << p <= x) {
-            if (x >> p & 1) {
-                prev[p] = i;
+        for (int j = 0; j < 31; j++) {
+            if (x >> j & 1) {
+                int diff = min(k, i - prev[j]);
+                    if (diff % 2 == 1) {
+                        cout << i << ' ' << x << ' ' << diff << ' ' << (1 << j) << endl;
+                        out ^= 1 << j;
+                    }
+                prev[j] = i;
             }
-            p++;
         }
         x = (a*x + b) % c;
-        if (i < k) continue;
-        int here = 0;
-        for (int j = 0; j < 31; j ++) {
-            if (prev[j] && prev[j] + k > i) {
-                here |= 1 << j;
-            }
-        }
-        //cout << x << ' ' << here << endl;
-        out ^= here;
     }
     cout << out;
     return 0;
