@@ -17,11 +17,11 @@ int main() {
     vector<map<int, ll>> graph(n+1, map<int, ll>());
     for (int i = 0; i < m; i++) {
         int a, b;
-        ll c;
-        cin >> a >> b >> c;
-        graph[a][b] += c;
+        cin >> a >> b;
+        graph[a][b]++;
     }
 
+    auto original = graph;
     ll total_flow = 0;
 
     while (true) {
@@ -54,6 +54,35 @@ int main() {
             cur = prev_node;
         }
     }
-    cout << total_flow;
+    cout << total_flow << '\n';
+    /*
+    for (int i = 1; i <= n; i++) {
+        cout << "Node: " << i << endl;
+        for (auto [neighbour, flow] : graph[i]) {
+            cout << "(" << neighbour << ", " << flow << ") ";
+        }
+        cout << endl;
+    }
+    */
+
+    for (int i = 0; i < total_flow; i++) {
+        vector<int> route = {1};
+        while (route.back() != n) {
+            int cur = route.back();
+            for (auto [neighbour, flow] : original[cur]) {
+                if (flow > graph[cur][neighbour]) {
+                    graph[cur][neighbour]++;
+                    route.push_back(neighbour);
+                    break;
+                }
+            }
+        }
+        cout << route.size() << '\n';
+        for (int i : route) {
+            cout << i << ' ';
+        }
+        cout << '\n';
+    }
+
     return 0;
 }

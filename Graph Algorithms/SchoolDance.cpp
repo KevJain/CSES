@@ -12,14 +12,20 @@ ll inf = 1e18;
 
 int main() {
     ios_base::sync_with_stdio(false); cin.tie(0);
-    int n, m;
-    cin >> n >> m;
+    int boys, girls, k;
+    cin >> boys >> girls >> k;
+    int n = boys + girls + 2; // 1 is source, boys + girls + 2 is sink
     vector<map<int, ll>> graph(n+1, map<int, ll>());
-    for (int i = 0; i < m; i++) {
+    for (int i = 0; i < k; i++) {
         int a, b;
-        ll c;
-        cin >> a >> b >> c;
-        graph[a][b] += c;
+        cin >> a >> b;
+        graph[a+1][b+boys+1]++;
+    }
+    for (int i = 0; i < boys; i++) {
+        graph[1][i + 2]++;
+    }
+    for (int i = 0; i < girls; i++) {
+        graph[boys+i+2][n]++;
     }
 
     ll total_flow = 0;
@@ -54,6 +60,16 @@ int main() {
             cur = prev_node;
         }
     }
-    cout << total_flow;
+    cout << total_flow << '\n';
+
+    // Check residual graph for flow, flow implies pairing
+    for (int girl = boys + 2; girl < n; girl++) {
+        for (auto [boy, flow] : graph[girl]) {
+            if (boy != n && flow == 1) {
+                cout << (boy - 1) << ' ' << (girl - boys - 1) << '\n';
+            }
+        }
+    }
+
     return 0;
 }
